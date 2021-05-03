@@ -3,7 +3,7 @@ from torchvision import datasets
 from torchvision import transforms
 from torch.utils.data import DataLoader
 
-# torch.manual_seed(0)
+torch.manual_seed(0)
 
 train_batch_size = 32
 test_batch_size = 2

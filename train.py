@@ -3,6 +3,7 @@ import torch.nn as nn
 from datasets.dataloader import make_train_dataloader
 from torchvision.models.resnet import resnet18
 from models.model import MyResnet18
+from models.model import Resnet18
 
 import os
 import copy
@@ -10,10 +11,12 @@ from tqdm import tqdm
 import pandas as pd
 from matplotlib import pyplot as plt
 
+# training parameters
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 epochs = 100
 learning_rate = 0.001
 
+# data path and weight path
 base_path = os.path.dirname(os.path.abspath(__file__))
 train_data_path = os.path.join(base_path, "data", "train")
 weight_path = os.path.join(base_path, "weights", "weight.pth")
@@ -21,15 +24,16 @@ weight_path = os.path.join(base_path, "weights", "weight.pth")
 # make dataloader for train data
 train_loader, valid_loader = make_train_dataloader(train_data_path)
 
-# set model
+# set model, we use Resnet18
 resnet = resnet18(pretrained=False)
 model = MyResnet18(resnet)
 model = model.to(device)
 
 # set optimizer and loss function
-optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 
+# train
 train_loss_list = list()
 valid_loss_list = list()
 train_accuracy_list = list()
@@ -78,15 +82,18 @@ for epoch in range(epochs):
         valid_accuracy = float(valid_correct) / len(valid_loader.dataset)
         valid_accuracy_list.append((valid_accuracy))
     
-    # print loss in one epoch
+    # print loss and accuracy in one epoch
     print(f'Training loss: {train_loss:.4f}, validation loss: {valid_loss:.4f}')
     print(f'Training accuracy: {train_accuracy:.4f}, validation accuracy: {valid_accuracy:.4f}')
 
+    # record best weight so far
     if valid_loss < best :
         best = valid_loss
         best_model_wts = copy.deepcopy(model.state_dict())
-
+# save the best weight
 torch.save(best_model_wts, weight_path)
+
+# plot the loss curve for training and validation
 print("\nFinished Training")
 pd.DataFrame({
     "train-loss": train_loss_list,
@@ -94,6 +101,7 @@ pd.DataFrame({
 }).plot()
 plt.savefig(os.path.join(base_path, "result", "Loss_curve"))
 
+# plot the accuracy curve for training and validation
 pd.DataFrame({
     "train-accuracy": train_accuracy_list,
     "valid-accuracy": valid_accuracy_list

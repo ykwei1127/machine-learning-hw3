@@ -3,6 +3,7 @@ from models.model import MyResnet18
 from datasets.dataloader import make_test_dataloader
 from torchvision.models.resnet import resnet18
 from models.model import MyResnet18
+from models.model import Resnet18
 
 import os
 from tqdm import tqdm
