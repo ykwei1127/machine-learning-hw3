@@ -26,7 +26,9 @@ train_loader, valid_loader = make_train_dataloader(train_data_path)
 
 # set model, we use Resnet18
 resnet = resnet18(pretrained=False)
+# print(resnet)
 model = MyResnet18(resnet)
+# print(model)
 model = model.to(device)
 
 # set optimizer and loss function
@@ -50,6 +52,7 @@ for epoch in range(epochs):
     model.train()
     for data, target in tqdm(train_loader, desc="Training"):
         data, target = data.to(device), target.to(device)
+        print(target)
 
         # forward + backward + optimize
         output  = model(data)

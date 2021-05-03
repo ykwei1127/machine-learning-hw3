@@ -21,48 +21,53 @@ class MyResnet18(nn.Module):
         super(MyResnet18, self).__init__()
         # 拿掉model的最後三層(layer4、average pooling、fully connected)
         self.resnet_layer = nn.Sequential(*list(model.children())[:-3])
+
+        ################### you need to complete the layer4 of resnet18 here ###################
+        # self.conv1 = nn.Sequential(
+        #     nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, stride=2, padding=1),
+        #     nn.BatchNorm2d(512),
+        #     nn.ReLU(inplace=True)
+        # )
+        # self.conv2 = nn.Sequential(
+        #     nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
+        #     nn.BatchNorm2d(512)
+        # )
+        # self.downsample = nn.Sequential(
+        #     nn.Conv2d(in_channels=256, out_channels=512, kernel_size=1, stride=2),
+        #     nn.BatchNorm2d(512)
+        # )
+        # self.conv3 = nn.Sequential(
+        #     nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
+        #     nn.BatchNorm2d(512),
+        #     nn.ReLU(inplace=True)
+        # )
+        # self.conv4 = nn.Sequential(
+        #     nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
+        #     nn.BatchNorm2d(512),
+        # )
         # ==================================================================================== #
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, stride=2, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(inplace=True)
-        )
-        self.conv2 = nn.Sequential(
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512)
-        )
-        self.downsample = nn.Sequential(
-            nn.Conv2d(in_channels=256, out_channels=512, kernel_size=1, stride=2),
-            nn.BatchNorm2d(512)
-        )
-        self.conv3 = nn.Sequential(
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.ReLU(inplace=True)
-        )
-        self.conv4 = nn.Sequential(
-            nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-        )
-        # ==================================================================================== #
+        
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512, 2)
+        self.fc = nn.Linear(256, 2)
 
     def forward(self, x):
         x = self.resnet_layer(x)
 
-        out = self.conv1(x)
-        out = self.conv2(out)
-        identity = self.downsample(x)
-        out += identity
-        out = nn.ReLU()(out)
-        identity = out
-        out = self.conv3(out)
-        out = self.conv4(out)
-        out += identity
-        out = nn.ReLU()(out)
+        
+        ################### you need to complete the layer4 of resnet18 here ###################
+        # out = self.conv1(x)
+        # out = self.conv2(out)
+        # identity = self.downsample(x)
+        # out += identity
+        # out = nn.ReLU()(out)
+        # identity = out
+        # out = self.conv3(out)
+        # out = self.conv4(out)
+        # out += identity
+        # out = nn.ReLU()(out)
+        # ==================================================================================== #
 
-        out = self.avgpool(out)
+        out = self.avgpool(x)   # if use operation above change 'x' to 'out'
         out = torch.flatten(out, 1)
         out = self.fc (out)
 
