@@ -32,7 +32,7 @@ model = MyResnet18(resnet)
 model = model.to(device)
 
 # set optimizer and loss function
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 
 # train
@@ -52,7 +52,6 @@ for epoch in range(epochs):
     model.train()
     for data, target in tqdm(train_loader, desc="Training"):
         data, target = data.to(device), target.to(device)
-        print(target)
 
         # forward + backward + optimize
         output  = model(data)
